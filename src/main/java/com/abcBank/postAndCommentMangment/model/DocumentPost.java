@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -17,13 +18,13 @@ import java.util.List;
 @Table(name = "DocumentPost")
 
 @JsonIgnoreProperties
-public class DocumentPost {
+public class DocumentPost implements Serializable {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "post_Id")
+    private Integer post_Id;
 
     @NotNull
     @Column(name = "document_Id")
@@ -38,9 +39,7 @@ public class DocumentPost {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "documentPost", fetch = FetchType.EAGER)
     private List<PostComment> postComments;
 
-    @Column(name="userId")
+    @Column(name = "userId")
     private int userId;
-
-
 
 }

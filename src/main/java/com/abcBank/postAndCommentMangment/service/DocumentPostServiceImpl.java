@@ -1,17 +1,15 @@
 package com.abcBank.postAndCommentMangment.service;
 
 import com.abcBank.postAndCommentMangment.model.*;
-import com.abcBank.postAndCommentMangment.repository.CommentRepo;
-import com.abcBank.postAndCommentMangment.repository.CommentResponseRepo;
 import com.abcBank.postAndCommentMangment.repository.DocumentPostRepositoryInterface;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.Arrays;
+import java.util.*;
+
 @Service
 public class DocumentPostServiceImpl implements DocumentPostService {
 
@@ -21,74 +19,130 @@ public class DocumentPostServiceImpl implements DocumentPostService {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    CommentResponseRepo commentResponseRepo;
-
-    @Autowired
-    CommentRepo commentRepo;
 
     @Override
     public BaseResponse<DocumentPost> savePost(DocumentPost documentPost) {
         BaseResponse<DocumentPost> documentPostBaseResponse = new BaseResponse<>();
-        //TODO:call document API of get
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        BaseResponse<Document> documentBaseResponse;
-        HttpEntity response = new HttpEntity<org.springframework.http.ResponseEntity<BaseResponse<?>>>(httpHeaders);
-        /*try {
+        BaseResponse userDetails;
+        HttpEntity response = new HttpEntity<>(httpHeaders);
+        try {
 
-            documentBaseResponse = restTemplate.exchange("http://localhost:8081/v1/api/getDocument/" + documentPost.getDocument_Id(), HttpMethod.GET, response, BaseResponse.class).getBody();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }*/
+            userDetails = restTemplate.exchange("http://localhost:8081/v2/api/getUserByDocumentId/" + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
+            }).getBody();
 
+            String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
+            Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
+            ArrayList<Document> documents = (ArrayList<Document>) ((LinkedHashMap) userDetails.getResponseObject()).get("documents");
+            UserDetails newUserDetails = new UserDetails();
+            newUserDetails.setUserName(username);
+            newUserDetails.setUser_Id(user_Id);
+            newUserDetails.setDocuments(documents);
 
-        documentPost = documentPostRepositoryInterface.save(documentPost);
-        if (documentPost.getId() > 0) {
-            documentPostBaseResponse.setResponseObject(documentPost);
-            documentPostBaseResponse.setReasonText("Save");
-            documentPostBaseResponse.setReasonCode("200");
-            documentPostBaseResponse.setReasonCode(CommonResponseData.SUCCESS);
-        } else {
-            documentPostBaseResponse.setReasonText("error");
-            documentPostBaseResponse.setReasonCode("500");
+            if (userDetails.getResponseObject() != null) {
+                if (newUserDetails.getUser_Id() == documentPost.getUserId()) {
+                    documentPost = documentPostRepositoryInterface.save(documentPost);
+                    if (documentPost.getDocument_Id() > 0) {
+                        documentPostBaseResponse.setResponseObject(documentPost);
+                        documentPostBaseResponse.setReasonText("SUCCESS");
+                        documentPostBaseResponse.setReasonCode("200");
+                        documentPostBaseResponse.setStatus("OK");
+                        documentPostBaseResponse.setReasonCode(CommonResponseData.SUCCESS);
+                    } else {
+                        documentPostBaseResponse.setReasonText("POST is not save");
+                        documentPostBaseResponse.setReasonCode("500");
+                        documentPostBaseResponse.setResponseObject(null);
+                        documentPostBaseResponse.setStatus("Fail");
+                        documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
+                    }
+                } else {
+                    documentPostBaseResponse.setReasonText("Your are not own this file");
+                    documentPostBaseResponse.setReasonCode("403 ");
+                    documentPostBaseResponse.setStatus("Fail");
+                    documentPostBaseResponse.setResponseObject(null);
+                    documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
+                }
+            }
+
+        } catch (Exception e) {
+            documentPostBaseResponse.setReasonText(e.getMessage());
+            documentPostBaseResponse.setReasonCode("500 ");
+            documentPostBaseResponse.setStatus("Fail");
+            documentPostBaseResponse.setResponseObject(null);
             documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
         }
         return documentPostBaseResponse;
     }
 
+
     @Override
     public BaseResponse<PostInfo> getPostInfoByPostId(int id) {
         DocumentPost documentPost = null;
-        PostComment postComment = null;
-
+        BaseResponse userDetails = null;
         BaseResponse baseResponse = new BaseResponse();
-        BaseResponse<PostInfo> documentPostBaseResponse = new BaseResponse<>();
-        try {
-            //fetch document data
-            documentPost = documentPostRepositoryInterface.findById(id).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //TODO:call document API of get
-        HttpHeaders httpHeaders=new HttpHeaders();
-        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        BaseResponse<UserDetails> userDetailsBaseResponse;
-        HttpEntity  response=new HttpEntity<org.springframework.http.ResponseEntity<BaseResponse<?>>>(httpHeaders);
-        try {
-            userDetailsBaseResponse = restTemplate.exchange("localhost:8081/v2/api/getUserByDocumentId" +id, HttpMethod.GET, response, BaseResponse.class).getBody();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        baseResponse.setReasonCode("200");
         PostInfo postInfo = new PostInfo();
-        postInfo.setDocumentPost(documentPost);
-        baseResponse.setResponseObject(postInfo);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity response = new HttpEntity<org.springframework.http.ResponseEntity<BaseResponse<?>>>(httpHeaders);
+        try {
+            documentPost = documentPostRepositoryInterface.findById(id).get();
+            userDetails = restTemplate.exchange("http://localhost:8081/v2/api/getUserByDocumentId/" + documentPost.getDocument_Id(), HttpMethod.GET, response, BaseResponse.class).getBody();
+
+            String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
+            Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
+            ArrayList<Document> documents = (ArrayList<Document>) ((LinkedHashMap) userDetails.getResponseObject()).get("documents");
+            UserDetails newUserDetails = new UserDetails();
+            newUserDetails.setUserName(username);
+            newUserDetails.setUser_Id(user_Id);
+            newUserDetails.setDocuments(documents);
+            postInfo.setDocumentPost(documentPost);
+            postInfo.setUserDetails(newUserDetails);
+            baseResponse.setResponseObject(postInfo);
+            baseResponse.setReasonCode("200");
+            baseResponse.setReasonText(CommonResponseData.SUCCESS);
+            baseResponse.setStatus(CommonResponseData.SUCCESS);
+            return baseResponse;
+        } catch (Exception e) {
+            baseResponse.setResponseObject(null);
+            baseResponse.setReasonCode("500");
+            baseResponse.setReasonText(CommonResponseData.FAIL);
+            baseResponse.setStatus(CommonResponseData.FAIL);
+        }
         return baseResponse;
     }
+
+
+    @Override
+    public BaseResponse<DocumentPost> deletePost(Integer id) {
+        BaseResponse<DocumentPost> response = new BaseResponse<>();
+        try {
+            DocumentPost documentPost = documentPostRepositoryInterface.findById(id).get();
+
+            if (documentPost != null) {
+                documentPostRepositoryInterface.delete(documentPost);
+                response.setResponseObject(null);
+                response.setReasonCode(CommonResponseData.SUCCESS);
+                response.setStatus(CommonResponseData.SUCCESS);
+                response.setReasonText("Post is deleted");
+            } else {
+                response.setReasonText("post is not found ");
+                response.setReasonCode(CommonResponseData.FAIL);
+                response.setStatus("Fail");
+
+                response.setStatus(CommonResponseData.FAIL);
+            }
+
+        } catch (Exception ex) {
+            response.setStatus(CommonResponseData.FAIL);
+            response.setReasonText(ex.getMessage());
+            response.setReasonCode(CommonResponseData.FAIL);
+            response.setStatus("Fail");
+
+            response.setResponseObject(null);
+
+        }
+        return response;
+    }
+
 }

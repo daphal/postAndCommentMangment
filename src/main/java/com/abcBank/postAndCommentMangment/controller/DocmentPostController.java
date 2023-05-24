@@ -26,15 +26,27 @@ public class DocmentPostController {
         return responseEntity;
     }
 
-
-    @GetMapping("/getInfoByPost/{id}")
-    public ResponseEntity<BaseResponse<?>> getPostInfoById(@PathVariable int id)
-    {
-            BaseResponse<PostInfo> baseResponse=documentPostService.getPostInfoByPostId(id);
-        ResponseEntity responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
+    @PatchMapping("/updatePost")
+    public ResponseEntity<BaseResponse<?>> updatePost(@RequestBody DocumentPost documentPost, HttpServletRequest request) throws Exception {
+        BaseResponse<DocumentPost> basedocumentPost = documentPostService.savePost(documentPost);
+        ResponseEntity responseEntity = new ResponseEntity<>(basedocumentPost, null, HttpStatus.ACCEPTED);
         return responseEntity;
     }
 
+    @DeleteMapping("/deletePost/{id}")
+    public ResponseEntity<BaseResponse<?>> deletePost(@PathVariable Integer id, HttpServletRequest request) throws Exception {
+        BaseResponse<DocumentPost> basedocumentPost = documentPostService.deletePost(id);
+        ResponseEntity responseEntity = new ResponseEntity<>(basedocumentPost, null, HttpStatus.ACCEPTED);
+        return responseEntity;
+    }
+
+
+    @GetMapping("/getInfoByPost/{id}")
+    public ResponseEntity<BaseResponse<?>> getPostInfoById(@PathVariable int id) {
+        BaseResponse<PostInfo> baseResponse = documentPostService.getPostInfoByPostId(id);
+        ResponseEntity responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
+        return responseEntity;
+    }
 
 
 }

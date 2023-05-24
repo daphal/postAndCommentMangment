@@ -3,12 +3,14 @@ package com.abcBank.postAndCommentMangment.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class PostInfo {
+public class PostInfo implements Serializable {
 
     private DocumentPost documentPost;
-    private  CommentResponse commentResponse;
-    private PostComment postComment;
+    private UserDetails userDetails;
+
 
 }

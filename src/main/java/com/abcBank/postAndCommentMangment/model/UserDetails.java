@@ -1,17 +1,17 @@
 package com.abcBank.postAndCommentMangment.model;
 
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
+
+import java.io.Serializable;
 import java.util.List;
 
-@Value
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class UserDetails {
+public class UserDetails implements Serializable {
 
 
     private Integer user_Id;
@@ -20,4 +20,5 @@ public class UserDetails {
 
     @JsonIgnore
     private List<Document> documents;
+
 }

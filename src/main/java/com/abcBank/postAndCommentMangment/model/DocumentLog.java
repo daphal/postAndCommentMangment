@@ -2,23 +2,18 @@ package com.abcBank.postAndCommentMangment.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-@Value
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class DocumentLog {
-
+public class DocumentLog implements Serializable {
 
     private Integer documentLog_Id;
-
-
     private LocalDateTime documentModifedTime = LocalDateTime.now();
-    @JsonIgnore
 
-    private Document documents;
 
 }

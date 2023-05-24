@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 @Getter
 @Setter
@@ -17,7 +18,7 @@ import java.util.List;
 @Table(name = "PostComment")
 
 @JsonIgnoreProperties
-public class PostComment {
+public class PostComment implements Serializable {
 
 
     @Id
@@ -35,8 +36,10 @@ public class PostComment {
     private DocumentPost documentPost;
 
     @JsonManagedReference
-   @OneToMany(mappedBy = "postComment")
+   @OneToMany(mappedBy = "postComment" ,fetch = FetchType.EAGER)
     List<CommentResponse> commentResponseLis;
 
+    @Column(name="userId")
+    private int userId;
 
 }
