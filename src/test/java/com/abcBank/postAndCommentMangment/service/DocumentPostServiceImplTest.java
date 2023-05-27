@@ -149,6 +149,34 @@ class DocumentPostServiceImplTest {
                 (ParameterizedTypeReference<Object>) any(), (Object[]) any());
     }
 
+    /**
+     * Method under test: {@link DocumentPostServiceImpl#savePost(DocumentPost)}
+     */
+    @Test
+    void testSavePost5() throws RestClientException {
+        when(restTemplate.exchange((String) any(), (HttpMethod) any(), (HttpEntity<Object>) any(),
+                (ParameterizedTypeReference<Object>) any(), (Object[]) any()))
+                .thenReturn(new ResponseEntity<>("Body", HttpStatus.CONTINUE));
+
+        DocumentPost documentPost = new DocumentPost();
+        documentPost.setDocument_Id(123);
+        documentPost.setPostComments(new ArrayList<>());
+        documentPost.setPostMessage("Post Message");
+        documentPost.setPost_Id(123);
+        documentPost.setUserId(123);
+        BaseResponse<DocumentPost> actualSavePostResult = documentPostServiceImpl.savePost(documentPost);
+        assertEquals("500 ", actualSavePostResult.getReasonCode());
+        assertEquals("fail", actualSavePostResult.getStatus());
+        assertNull(actualSavePostResult.getResponseObject());
+        assertEquals(
+                "class java.lang.String cannot be cast to class com.abcBank.postAndCommentMangment.model.BaseResponse"
+                        + " (java.lang.String is in module java.base of loader 'bootstrap'; com.abcBank.postAndCommentMangment"
+                        + ".model.BaseResponse is in unnamed module of loader com.diffblue.cover.f.g @209507a0)",
+                actualSavePostResult.getReasonText());
+        verify(restTemplate).exchange((String) any(), (HttpMethod) any(), (HttpEntity<Object>) any(),
+                (ParameterizedTypeReference<Object>) any(), (Object[]) any());
+    }
+
 
     @Test
     void testGetPostInfoByPostId() throws RestClientException {

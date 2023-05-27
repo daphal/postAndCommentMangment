@@ -17,8 +17,6 @@ public class UserDetails implements Serializable {
     private Integer user_Id;
 
     private String userName;
-
-    @JsonIgnore
     private List<Document> documents;
 
 }
