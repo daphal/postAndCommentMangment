@@ -19,6 +19,8 @@ public class DocumentPostServiceImpl implements DocumentPostService {
     @Autowired
     RestTemplate restTemplate;
 
+    String url="http://localhost:8022/document-service/v2/api/getUserByDocumentId/";
+
 
     @Override
     public BaseResponse<DocumentPost> savePost(DocumentPost documentPost) {
@@ -29,7 +31,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         HttpEntity response = new HttpEntity<>(httpHeaders);
         try {
 
-            userDetails = restTemplate.exchange("http://localhost:8022/document-service/v2/api/getUserByDocumentId/" + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
+            userDetails = restTemplate.exchange( url + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
             }).getBody();
 
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
@@ -87,7 +89,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         HttpEntity response = new HttpEntity<org.springframework.http.ResponseEntity<BaseResponse<?>>>(httpHeaders);
         try {
             documentPost = documentPostRepositoryInterface.findById(id).get();
-            userDetails = restTemplate.exchange("http://localhost:8022/document-service/v2/api/getUserByDocumentId/" + documentPost.getDocument_Id(), HttpMethod.GET, response, BaseResponse.class).getBody();
+            userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, response, BaseResponse.class).getBody();
 
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
             Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
