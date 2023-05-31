@@ -19,8 +19,6 @@ import java.util.List;
 
 @JsonIgnoreProperties
 public class DocumentPost implements Serializable {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_Id")
@@ -34,12 +32,10 @@ public class DocumentPost implements Serializable {
     @Column(name = "postMessage")
     private String postMessage;
 
-
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "documentPost", fetch = FetchType.EAGER)
     private List<PostComment> postComments;
 
     @Column(name = "userId")
     private int userId;
-
 }

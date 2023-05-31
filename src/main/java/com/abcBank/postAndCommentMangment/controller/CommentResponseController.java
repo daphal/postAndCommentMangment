@@ -15,22 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/v1/api")
 @CrossOrigin("*")
 public class CommentResponseController {
-
     @Autowired
     CommentResponseService commentResponseService;
-
     @PostMapping("/saveCommentResponse")
     public ResponseEntity<BaseResponse<?>> saveCommentsResponse(@RequestBody CommentResponse commentResponse) {
         BaseResponse<CommentResponse> baseResponse = commentResponseService.saveCommenResponseService(commentResponse);
         return new ResponseEntity<BaseResponse<?>>(baseResponse, null, HttpStatus.ACCEPTED);
     }
-
     @PatchMapping("/updateCommentResponse")
     public ResponseEntity<BaseResponse<?>> updateCommentResponse(@RequestBody CommentResponse commentResponse) {
         BaseResponse<CommentResponse> baseResponse = commentResponseService.saveCommenResponseService(commentResponse);
         return new ResponseEntity<BaseResponse<?>>(baseResponse, null, HttpStatus.ACCEPTED);
     }
-
     @DeleteMapping("/deleteCommentResponse/{id}")
     public ResponseEntity<BaseResponse<?>> deleteCommentResponse(@PathVariable Integer id, HttpServletRequest request) throws Exception {
         BaseResponse<CommentResponse> baseResponse = commentResponseService.deleteComment(id);

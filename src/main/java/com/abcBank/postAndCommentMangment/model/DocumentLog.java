@@ -11,9 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class DocumentLog implements Serializable {
-
     private Integer documentLog_Id;
     private LocalDateTime documentModifedTime = LocalDateTime.now();
-
-
 }

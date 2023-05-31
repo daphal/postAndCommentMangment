@@ -12,12 +12,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-
     @Autowired
     CommentRepositoryInterface commentRepositoryInterface;
     @Autowired
     DocumentPostRepositoryInterface documentPostRepositoryInterface;
-
     @Override
     public BaseResponse<PostComment> saveCommentService(PostComment postComment) {
         PostComment postCommentNew;
@@ -44,13 +42,11 @@ public class CommentServiceImpl implements CommentService {
         }
         return baseResponse;
     }
-
     @Override
     public BaseResponse<PostComment> deleteComment(Integer id) {
         BaseResponse<PostComment> response = new BaseResponse<>();
         try {
             PostComment postComment = commentRepositoryInterface.findById(id).get();
-
             if (postComment != null) {
                 commentRepositoryInterface.delete(postComment);
                 response.setResponseObject(null);
@@ -62,15 +58,12 @@ public class CommentServiceImpl implements CommentService {
                 response.setReasonCode(CommonResponseData.FAIL);
                 response.setStatus(CommonResponseData.FAIL);
                 response.setResponseObject(null);
-
             }
-
         } catch (Exception ex) {
             response.setStatus(CommonResponseData.FAIL);
             response.setReasonText(ex.getMessage());
             response.setReasonCode(CommonResponseData.FAIL);
             response.setResponseObject(null);
-
         }
         return response;
     }

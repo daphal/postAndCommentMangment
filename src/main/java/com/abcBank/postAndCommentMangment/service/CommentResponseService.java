@@ -5,6 +5,5 @@ import com.abcBank.postAndCommentMangment.model.CommentResponse;
 
 public interface CommentResponseService {
     BaseResponse<CommentResponse> saveCommenResponseService(CommentResponse commentResponse);
-
     BaseResponse<CommentResponse> deleteComment(Integer id);
 }

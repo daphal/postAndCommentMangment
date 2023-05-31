@@ -12,16 +12,11 @@ import java.util.*;
 
 @Service
 public class DocumentPostServiceImpl implements DocumentPostService {
-
     @Autowired
     DocumentPostRepositoryInterface documentPostRepositoryInterface;
-
     @Autowired
     RestTemplate restTemplate;
-
     String url="http://localhost:8022/document-service/v2/api/getUserByDocumentId/";
-
-
     @Override
     public BaseResponse<DocumentPost> savePost(DocumentPost documentPost) {
         BaseResponse<DocumentPost> documentPostBaseResponse = new BaseResponse<>();
@@ -30,10 +25,8 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         BaseResponse userDetails;
         HttpEntity response = new HttpEntity<>(httpHeaders);
         try {
-
-            userDetails = restTemplate.exchange( url + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
+        userDetails = restTemplate.exchange( url + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
             }).getBody();
-
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
             Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
             ArrayList<Document> documents = (ArrayList<Document>) ((LinkedHashMap) userDetails.getResponseObject()).get("documents");
@@ -41,7 +34,6 @@ public class DocumentPostServiceImpl implements DocumentPostService {
             newUserDetails.setUserName(username);
             newUserDetails.setUser_Id(user_Id);
             newUserDetails.setDocuments(documents);
-
             if (userDetails.getResponseObject() != null) {
                 if (newUserDetails.getUser_Id() == documentPost.getUserId()) {
                     documentPost = documentPostRepositoryInterface.save(documentPost);
@@ -66,7 +58,6 @@ public class DocumentPostServiceImpl implements DocumentPostService {
                     documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
                 }
             }
-
         } catch (Exception e) {
             documentPostBaseResponse.setReasonText(e.getMessage());
             documentPostBaseResponse.setReasonCode("500 ");
@@ -76,8 +67,6 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         }
         return documentPostBaseResponse;
     }
-
-
     @Override
     public BaseResponse<PostInfo> getPostInfoByPostId(int id) {
         DocumentPost documentPost = null;
@@ -90,7 +79,6 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         try {
             documentPost = documentPostRepositoryInterface.findById(id).get();
             userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, response, BaseResponse.class).getBody();
-
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
             Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
             ArrayList<Document> documents = (ArrayList<Document>) ((LinkedHashMap) userDetails.getResponseObject()).get("documents");
@@ -105,7 +93,8 @@ public class DocumentPostServiceImpl implements DocumentPostService {
             baseResponse.setReasonText(CommonResponseData.SUCCESS);
             baseResponse.setStatus(CommonResponseData.SUCCESS);
             return baseResponse;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             baseResponse.setResponseObject(null);
             baseResponse.setReasonCode("500");
             baseResponse.setReasonText(CommonResponseData.FAIL);
@@ -113,14 +102,11 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         }
         return baseResponse;
     }
-
-
     @Override
     public BaseResponse<DocumentPost> deletePost(Integer id) {
         BaseResponse<DocumentPost> response = new BaseResponse<>();
         try {
             DocumentPost documentPost = documentPostRepositoryInterface.findById(id).get();
-
             if (documentPost != null) {
                 documentPostRepositoryInterface.delete(documentPost);
                 response.setResponseObject(null);
@@ -131,20 +117,15 @@ public class DocumentPostServiceImpl implements DocumentPostService {
                 response.setReasonText("post is not found ");
                 response.setReasonCode(CommonResponseData.FAIL);
                 response.setStatus("Fail");
-
                 response.setStatus(CommonResponseData.FAIL);
             }
-
         } catch (Exception ex) {
             response.setStatus(CommonResponseData.FAIL);
             response.setReasonText(ex.getMessage());
             response.setReasonCode(CommonResponseData.FAIL);
             response.setStatus("Fail");
-
             response.setResponseObject(null);
-
         }
         return response;
     }
-
 }

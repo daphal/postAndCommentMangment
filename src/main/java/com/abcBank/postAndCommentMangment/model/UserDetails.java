@@ -12,11 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UserDetails implements Serializable {
-
-
     private Integer user_Id;
-
     private String userName;
     private List<Document> documents;
-
 }

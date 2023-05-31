@@ -11,15 +11,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CommentResponseServiceImpl implements CommentResponseService {
-
     @Autowired
     CommentResponseRepositoryInterface commentResponseRepositoryInterface;
     @Autowired
     CommentRepositoryInterface commentRepositoryInterface;
-
     @Override
     public BaseResponse<CommentResponse> saveCommenResponseService(CommentResponse commentResponse) {
-
         BaseResponse<CommentResponse> baseResponse = new BaseResponse<>();
         PostComment postComment = commentRepositoryInterface.findById(commentResponse.getPostComment().getComment_Id()).get();
         if (postComment != null) {
@@ -35,23 +32,19 @@ public class CommentResponseServiceImpl implements CommentResponseService {
                 baseResponse.setStatus("500");
                 baseResponse.setReasonText(CommonResponseData.FAIL);
             }
-
         } else {
             baseResponse.setReasonText("comment is not found ");
             baseResponse.setReasonCode(CommonResponseData.FAIL);
             baseResponse.setStatus(CommonResponseData.FAIL);
             baseResponse.setResponseObject(null);
         }
-
         return baseResponse;
     }
-
     @Override
     public BaseResponse<CommentResponse> deleteComment(Integer id) {
         BaseResponse<CommentResponse> response = new BaseResponse<>();
         try {
             CommentResponse commentResponse = commentResponseRepositoryInterface.findById(id).get();
-
             if (commentResponse != null) {
                 commentResponseRepositoryInterface.delete(commentResponse);
                 response.setResponseObject(null);
@@ -63,15 +56,12 @@ public class CommentResponseServiceImpl implements CommentResponseService {
                 response.setReasonCode(CommonResponseData.FAIL);
                 response.setStatus(CommonResponseData.FAIL);
                 response.setResponseObject(null);
-
             }
-
         } catch (Exception ex) {
             response.setStatus(CommonResponseData.FAIL);
             response.setReasonText(ex.getMessage());
             response.setReasonCode(CommonResponseData.FAIL);
             response.setResponseObject(null);
-
         }
         return response;
     }

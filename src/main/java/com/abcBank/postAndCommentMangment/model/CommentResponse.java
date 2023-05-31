@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 @JsonIgnoreProperties
 public class CommentResponse implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_Response_ID")
@@ -25,7 +24,6 @@ public class CommentResponse implements Serializable {
     @NotNull
     @Column(name = "commentResponse")
     private String commentResponse;
-
     @JsonBackReference
     @ManyToOne()
     private PostComment postComment;

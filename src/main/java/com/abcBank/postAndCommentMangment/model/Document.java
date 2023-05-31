@@ -11,14 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Document implements Serializable {
-
     private Integer document_Id;
     private String documentName;
     private String documentData;
     private String documentType;
     private Boolean deleted = false;
     @JsonIgnore
-
     private List<DocumentLog> documentLogs;
-
 }

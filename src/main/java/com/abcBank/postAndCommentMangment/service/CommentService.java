@@ -6,6 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface CommentService {
     BaseResponse<PostComment> saveCommentService(PostComment postComment);
-
     BaseResponse<PostComment> deleteComment(Integer id);
 }
