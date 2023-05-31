@@ -4,11 +4,16 @@ import com.abcBank.postAndCommentMangment.model.*;
 import com.abcBank.postAndCommentMangment.repository.DocumentPostRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 @Service
 public class DocumentPostServiceImpl implements DocumentPostService {
@@ -16,7 +21,8 @@ public class DocumentPostServiceImpl implements DocumentPostService {
     DocumentPostRepositoryInterface documentPostRepositoryInterface;
     @Autowired
     RestTemplate restTemplate;
-    String url="http://localhost:8022/document-service/v2/api/getUserByDocumentId/";
+    String url = "http://localhost:8022/document-service/v2/api/getUserByDocumentId/";
+
     @Override
     public BaseResponse<DocumentPost> savePost(DocumentPost documentPost) {
         BaseResponse<DocumentPost> documentPostBaseResponse = new BaseResponse<>();
@@ -25,7 +31,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         BaseResponse userDetails;
         HttpEntity response = new HttpEntity<>(httpHeaders);
         try {
-        userDetails = restTemplate.exchange( url + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
+            userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
             }).getBody();
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
             Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
@@ -67,6 +73,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         }
         return documentPostBaseResponse;
     }
+
     @Override
     public BaseResponse<PostInfo> getPostInfoByPostId(int id) {
         DocumentPost documentPost = null;
@@ -93,8 +100,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
             baseResponse.setReasonText(CommonResponseData.SUCCESS);
             baseResponse.setStatus(CommonResponseData.SUCCESS);
             return baseResponse;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             baseResponse.setResponseObject(null);
             baseResponse.setReasonCode("500");
             baseResponse.setReasonText(CommonResponseData.FAIL);
@@ -102,6 +108,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         }
         return baseResponse;
     }
+
     @Override
     public BaseResponse<DocumentPost> deletePost(Integer id) {
         BaseResponse<DocumentPost> response = new BaseResponse<>();

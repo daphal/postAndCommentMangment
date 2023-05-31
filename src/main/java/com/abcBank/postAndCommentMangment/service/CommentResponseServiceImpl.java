@@ -15,6 +15,7 @@ public class CommentResponseServiceImpl implements CommentResponseService {
     CommentResponseRepositoryInterface commentResponseRepositoryInterface;
     @Autowired
     CommentRepositoryInterface commentRepositoryInterface;
+
     @Override
     public BaseResponse<CommentResponse> saveCommenResponseService(CommentResponse commentResponse) {
         BaseResponse<CommentResponse> baseResponse = new BaseResponse<>();
@@ -40,6 +41,7 @@ public class CommentResponseServiceImpl implements CommentResponseService {
         }
         return baseResponse;
     }
+
     @Override
     public BaseResponse<CommentResponse> deleteComment(Integer id) {
         BaseResponse<CommentResponse> response = new BaseResponse<>();

@@ -7,7 +7,6 @@ import com.abcBank.postAndCommentMangment.model.PostComment;
 import com.abcBank.postAndCommentMangment.repository.CommentRepositoryInterface;
 import com.abcBank.postAndCommentMangment.repository.DocumentPostRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +15,7 @@ public class CommentServiceImpl implements CommentService {
     CommentRepositoryInterface commentRepositoryInterface;
     @Autowired
     DocumentPostRepositoryInterface documentPostRepositoryInterface;
+
     @Override
     public BaseResponse<PostComment> saveCommentService(PostComment postComment) {
         PostComment postCommentNew;
@@ -42,6 +42,7 @@ public class CommentServiceImpl implements CommentService {
         }
         return baseResponse;
     }
+
     @Override
     public BaseResponse<PostComment> deleteComment(Integer id) {
         BaseResponse<PostComment> response = new BaseResponse<>();
