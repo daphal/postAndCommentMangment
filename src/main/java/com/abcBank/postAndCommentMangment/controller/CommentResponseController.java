@@ -2,6 +2,7 @@ package com.abcBank.postAndCommentMangment.controller;
 
 import com.abcBank.postAndCommentMangment.model.BaseResponse;
 import com.abcBank.postAndCommentMangment.model.CommentResponse;
+import com.abcBank.postAndCommentMangment.model.CommonResponseData;
 import com.abcBank.postAndCommentMangment.model.PostComment;
 import com.abcBank.postAndCommentMangment.service.CommentResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +21,37 @@ public class CommentResponseController {
     @PostMapping("/saveCommentResponse")
     public ResponseEntity<BaseResponse<?>> saveCommentsResponse(@RequestBody CommentResponse commentResponse) {
         BaseResponse<CommentResponse> baseResponse = commentResponseService.saveCommenResponseService(commentResponse);
-        return new ResponseEntity<BaseResponse<?>>(baseResponse, null, HttpStatus.ACCEPTED);
+        ResponseEntity responseEntity;
+        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+            responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
+        }
+        else{
+            responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.EXPECTATION_FAILED);
+        }
+        return responseEntity;
     }
     @PatchMapping("/updateCommentResponse")
     public ResponseEntity<BaseResponse<?>> updateCommentResponse(@RequestBody CommentResponse commentResponse) {
         BaseResponse<CommentResponse> baseResponse = commentResponseService.saveCommenResponseService(commentResponse);
-        return new ResponseEntity<BaseResponse<?>>(baseResponse, null, HttpStatus.ACCEPTED);
+        ResponseEntity responseEntity;
+        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+            responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
+        }
+        else{
+            responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.EXPECTATION_FAILED);
+        }
+        return responseEntity;
     }
     @DeleteMapping("/deleteCommentResponse/{id}")
     public ResponseEntity<BaseResponse<?>> deleteCommentResponse(@PathVariable Integer id, HttpServletRequest request) throws Exception {
         BaseResponse<CommentResponse> baseResponse = commentResponseService.deleteComment(id);
-        ResponseEntity responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
+        ResponseEntity responseEntity;
+        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+            responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
+        }
+        else{
+            responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.EXPECTATION_FAILED);
+        }
         return responseEntity;
     }
 }

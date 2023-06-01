@@ -7,8 +7,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class PostInfo implements Serializable {
+public class PostInfoSave implements Serializable {
     private DocumentPost documentPost;
-    private UserDetails userDetails;
+    private Document document;
 }
-

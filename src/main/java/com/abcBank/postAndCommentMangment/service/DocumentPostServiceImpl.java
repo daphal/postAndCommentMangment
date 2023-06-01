@@ -22,6 +22,7 @@ public class DocumentPostServiceImpl implements DocumentPostService {
     @Autowired
     RestTemplate restTemplate;
     String url = "http://localhost:8022/document-service/v2/api/getUserByDocumentId/";
+    String url1 = "http://localhost:8022/document-service/v1/api/saveDocument";
 
     @Override
     public BaseResponse<DocumentPost> savePost(DocumentPost documentPost) {
@@ -29,9 +30,8 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         BaseResponse userDetails;
-        HttpEntity response = new HttpEntity<>(httpHeaders);
-        try {
-            userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, response, new ParameterizedTypeReference<BaseResponse>() {
+        HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
+            userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<BaseResponse>() {
             }).getBody();
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
             Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
@@ -64,13 +64,6 @@ public class DocumentPostServiceImpl implements DocumentPostService {
                     documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
                 }
             }
-        } catch (Exception e) {
-            documentPostBaseResponse.setReasonText(e.getMessage());
-            documentPostBaseResponse.setReasonCode("500 ");
-            documentPostBaseResponse.setStatus("Fail");
-            documentPostBaseResponse.setResponseObject(null);
-            documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
-        }
         return documentPostBaseResponse;
     }
 
@@ -82,10 +75,9 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         PostInfo postInfo = new PostInfo();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity response = new HttpEntity<org.springframework.http.ResponseEntity<BaseResponse<?>>>(httpHeaders);
-        try {
+        HttpEntity httpEntity = new HttpEntity<org.springframework.http.ResponseEntity<BaseResponse<?>>>(httpHeaders);
             documentPost = documentPostRepositoryInterface.findById(id).get();
-            userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, response, BaseResponse.class).getBody();
+            userDetails = restTemplate.exchange(url + documentPost.getDocument_Id(), HttpMethod.GET, httpEntity, BaseResponse.class).getBody();
             String username = ((String) ((LinkedHashMap) userDetails.getResponseObject()).get("userName"));
             Integer user_Id = (Integer) ((LinkedHashMap) userDetails.getResponseObject()).get("user_Id");
             ArrayList<Document> documents = (ArrayList<Document>) ((LinkedHashMap) userDetails.getResponseObject()).get("documents");
@@ -99,20 +91,12 @@ public class DocumentPostServiceImpl implements DocumentPostService {
             baseResponse.setReasonCode("200");
             baseResponse.setReasonText(CommonResponseData.SUCCESS);
             baseResponse.setStatus(CommonResponseData.SUCCESS);
-            return baseResponse;
-        } catch (Exception e) {
-            baseResponse.setResponseObject(null);
-            baseResponse.setReasonCode("500");
-            baseResponse.setReasonText(CommonResponseData.FAIL);
-            baseResponse.setStatus(CommonResponseData.FAIL);
-        }
         return baseResponse;
     }
 
     @Override
     public BaseResponse<DocumentPost> deletePost(Integer id) {
         BaseResponse<DocumentPost> response = new BaseResponse<>();
-        try {
             DocumentPost documentPost = documentPostRepositoryInterface.findById(id).get();
             if (documentPost != null) {
                 documentPostRepositoryInterface.delete(documentPost);
@@ -126,13 +110,40 @@ public class DocumentPostServiceImpl implements DocumentPostService {
                 response.setStatus("Fail");
                 response.setStatus(CommonResponseData.FAIL);
             }
-        } catch (Exception ex) {
-            response.setStatus(CommonResponseData.FAIL);
-            response.setReasonText(ex.getMessage());
-            response.setReasonCode(CommonResponseData.FAIL);
-            response.setStatus("Fail");
-            response.setResponseObject(null);
-        }
         return response;
+    }
+    @Override
+    public BaseResponse<PostInfoSave> savePost1(PostInfoSave postInfo) {
+        BaseResponse<PostInfoSave> documentPostBaseResponse = new BaseResponse<>();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        BaseResponse<Document> document;
+        HttpEntity<Document> httpEntity = new HttpEntity<Document>(postInfo.getDocument(),httpHeaders);
+       document = restTemplate.exchange(url1, HttpMethod.POST, httpEntity, BaseResponse.class).getBody();
+       postInfo.getDocument().setDocument_Id(document.getResponseObject().getDocument_Id());
+        if(document.getStatus()=="success"){
+                    postInfo.setDocumentPost(documentPostRepositoryInterface.save(postInfo.getDocumentPost()));
+                    if (postInfo.getDocumentPost().getPost_Id() > 0) {
+                        documentPostBaseResponse.setResponseObject(postInfo);
+                        documentPostBaseResponse.setReasonText("SUCCESS");
+                        documentPostBaseResponse.setReasonCode("200");
+                        documentPostBaseResponse.setStatus("OK");
+                        documentPostBaseResponse.setReasonCode(CommonResponseData.SUCCESS);
+                    } else {
+                        documentPostBaseResponse.setReasonText("POST is not save");
+                        documentPostBaseResponse.setReasonCode("500");
+                        documentPostBaseResponse.setResponseObject(null);
+                        documentPostBaseResponse.setStatus("Fail");
+                        documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
+                    }
+        }
+        else {
+            documentPostBaseResponse.setReasonText("Document is not save");
+            documentPostBaseResponse.setReasonCode("500");
+            documentPostBaseResponse.setResponseObject(null);
+            documentPostBaseResponse.setStatus("Fail");
+            documentPostBaseResponse.setStatus(CommonResponseData.FAIL);
+        }
+        return documentPostBaseResponse;
     }
 }

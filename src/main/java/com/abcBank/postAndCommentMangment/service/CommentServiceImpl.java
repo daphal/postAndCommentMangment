@@ -46,7 +46,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public BaseResponse<PostComment> deleteComment(Integer id) {
         BaseResponse<PostComment> response = new BaseResponse<>();
-        try {
             PostComment postComment = commentRepositoryInterface.findById(id).get();
             if (postComment != null) {
                 commentRepositoryInterface.delete(postComment);
@@ -60,12 +59,6 @@ public class CommentServiceImpl implements CommentService {
                 response.setStatus(CommonResponseData.FAIL);
                 response.setResponseObject(null);
             }
-        } catch (Exception ex) {
-            response.setStatus(CommonResponseData.FAIL);
-            response.setReasonText(ex.getMessage());
-            response.setReasonCode(CommonResponseData.FAIL);
-            response.setResponseObject(null);
-        }
         return response;
     }
 }
