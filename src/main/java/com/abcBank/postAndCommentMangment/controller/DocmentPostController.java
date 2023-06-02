@@ -19,7 +19,7 @@ public class DocmentPostController {
     public ResponseEntity<BaseResponse<?>> createPost(@RequestBody DocumentPost documentPost, HttpServletRequest request) throws Exception {
         BaseResponse<DocumentPost> baseResponse = documentPostService.savePost(documentPost);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
@@ -31,7 +31,7 @@ public class DocmentPostController {
     public ResponseEntity<BaseResponse<?>> updatePost(@RequestBody DocumentPost documentPost, HttpServletRequest request) throws Exception {
         BaseResponse<DocumentPost> baseResponse = documentPostService.savePost(documentPost);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
@@ -43,7 +43,7 @@ public class DocmentPostController {
     public ResponseEntity<BaseResponse<?>> deletePost(@PathVariable Integer id, HttpServletRequest request) throws Exception {
         BaseResponse<DocumentPost> baseResponse = documentPostService.deletePost(id);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
@@ -55,7 +55,7 @@ public class DocmentPostController {
     public ResponseEntity<BaseResponse<?>> getPostInfoById(@PathVariable int id) {
         BaseResponse<PostInfo> baseResponse = documentPostService.getPostInfoByPostId(id);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
@@ -68,7 +68,7 @@ public class DocmentPostController {
     public ResponseEntity<BaseResponse<?>> savePost(@RequestBody PostInfoSave postInfo, HttpServletRequest request) throws Exception {
         BaseResponse<PostInfoSave>  baseResponse = documentPostService.savePost1(postInfo);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{

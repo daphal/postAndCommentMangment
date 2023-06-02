@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionController {
     BaseResponse response = new BaseResponse<>();
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<?>> unknowException(Exception exception){
         response.setStatus(CommonResponseData.FAIL);
@@ -20,5 +19,4 @@ public class GlobalExceptionController {
         ResponseEntity responseEntity = new ResponseEntity<>(response, null, HttpStatus.EXPECTATION_FAILED);
         return  responseEntity;
     }
-
 }

@@ -117,11 +117,13 @@ public class DocumentPostServiceImpl implements DocumentPostService {
         BaseResponse<PostInfoSave> documentPostBaseResponse = new BaseResponse<>();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        BaseResponse<Document> document;
+        BaseResponse document=null;
         HttpEntity<Document> httpEntity = new HttpEntity<Document>(postInfo.getDocument(),httpHeaders);
        document = restTemplate.exchange(url1, HttpMethod.POST, httpEntity, BaseResponse.class).getBody();
-       postInfo.getDocument().setDocument_Id(document.getResponseObject().getDocument_Id());
-        if(document.getStatus()=="success"){
+      Integer doucment_Id = (Integer) ((LinkedHashMap) document.getResponseObject()).get("document_Id");
+       postInfo.getDocument().setDocument_Id(doucment_Id);
+        if(document.getStatus().equals("success")){
+                    postInfo.getDocument().setDocument_Id(doucment_Id);
                     postInfo.setDocumentPost(documentPostRepositoryInterface.save(postInfo.getDocumentPost()));
                     if (postInfo.getDocumentPost().getPost_Id() > 0) {
                         documentPostBaseResponse.setResponseObject(postInfo);

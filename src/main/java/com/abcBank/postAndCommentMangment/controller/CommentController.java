@@ -22,7 +22,7 @@ public class CommentController {
     public ResponseEntity<BaseResponse<?>> saveComments(@RequestBody PostComment postComment) {
         BaseResponse<PostComment> baseResponse = commentService.saveCommentService(postComment);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
@@ -34,7 +34,7 @@ public class CommentController {
     public ResponseEntity<BaseResponse<?>> updateComment(@RequestBody PostComment postComment) {
         BaseResponse<PostComment> baseResponse = commentService.saveCommentService(postComment);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
@@ -46,7 +46,7 @@ public class CommentController {
     public ResponseEntity<BaseResponse<?>> deletePostComment(@PathVariable Integer id, HttpServletRequest request) throws Exception {
         BaseResponse<PostComment> baseResponse = commentService.deleteComment(id);
         ResponseEntity responseEntity;
-        if(baseResponse.getStatus()== CommonResponseData.SUCCESS) {
+        if(baseResponse.getStatus().equals(CommonResponseData.SUCCESS)) {
             responseEntity = new ResponseEntity<>(baseResponse, null, HttpStatus.ACCEPTED);
         }
         else{
